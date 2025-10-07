@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Next Chapter | Trip Pairing</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<style>
+:root { --blue:#0033A1; --white:#fff; --gray:#e8ebf1; --muted:#56607a; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Inter,Arial,sans-serif;background:var(--white);color:#222;}
+.wrapper{max-width:760px;margin:40px auto;padding:24px}
+.card{background:#fff;border:1px solid var(--gray);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.08);padding:28px}
+h1{color:var(--blue);margin:0 0 6px}
+h2{margin:6px 0 18px;color:#111}
+p{color:#444;margin:0 0 16px}
+label{display:block;margin:14px 0 6px;font-weight:600}
+input,select{width:100%;padding:12px 14px;border:1px solid var(--gray);border-radius:10px;font-size:15px}
+.btn{background:var(--blue);color:#fff;border:0;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer}
+.btn.secondary{background:#5b647a}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.hidden{display:none}
+.center{text-align:center}
+.thank{font-size:36px;font-weight:800;color:var(--blue)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.note{color:var(--muted);font-size:13px}
+.err{color:#c02929;font-size:14px;margin-top:6px}
+hr{border:0;border-top:1px solid var(--gray);margin:18px 0}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+th,td{border:1px solid var(--gray);padding:8px;text-align:left}
+th{background:#f8f9fb;color:#333}
+
+/* CSV button top-right (admins only) */
+.csv-btn{
+  position:fixed; top:12px; right:12px; z-index:9999;
+  background:#0f1a33; color:#fff; border:0;
+  padding:8px 10px; border-radius:999px; font-weight:700;
+  font-size:12px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.csv-btn.hidden{display:none}
+</style>
+</head>
+<body>
+
+<button id="downloadBtn" class="csv-btn hidden" title="Download CSV">CSV ⭳</button>
+
+<div class="wrapper">
+
+  <!-- LOGIN -->
+  <div id="loginCard" class="card">
+    <h1>The Next Chapter</h1>
+    <h2>Trip Pairing System</h2>
+    <p class="note">Enter your work email to continue.</p>
+    <label for="emailInput">Work email</label>
+    <input type="email" id="emailInput" placeholder="you@company.com" autocomplete="email">
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn" id="loginBtn">Continue</button>
+      <span id="loginMsg" class="err"></span>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div id="formCard" class="card hidden">
+    <h1>The Next Chapter</h1>
+    <h2>Trip Pairing System</h2>
+    <p class="note">This site provides options for selecting the team member you wish to pair with at the off-site session. Kindly ensure you have agreed with your partner.</p>
+
+    <div class="row">
+      <div>
+        <label for="yourName">Your name</label>
+        <select id="yourName"></select>
+      </div>
+      <div>
+        <label for="pairName">Your roommate</label>
+        <select id="pairName"></select>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn" id="doneBtn">Done</button>
+      <span id="status" class="err"></span>
+    </div>
+
+    <hr>
+
+    <details>
+      <summary class="note">Admin (local only)</summary>
+      <div style="margin-top:10px">
+        <button class="btn secondary" id="resetLocal">Reset local used names</button>
+        <button class="btn secondary" id="showData">Show local records</button>
+        <div id="tableWrap"></div>
+        <p class="note">Note: This page stores only in your browser unless you enable the optional global mode below.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- THANK YOU -->
+  <div id="thankCard" class="card hidden center">
+    <div class="thank">THANK YOU</div>
+    <p class="note">Your pairing has been recorded.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+/* ===================== EASY-EDIT SECTION ===================== */
+/* Paste your emails and names here. Keep quotes & commas.      */
+
+/** Allow-list (non-admin users must be here) **/
+const EMAIL_ALLOWLIST = ["wujangia@stanbic.com.gh","adamsc@STANBIC.COM.GH","dordziec@stanbic.com.gh","dapaahc@STANBIC.COM.GH","daflisog@stanbic.com.gh","adu-gyamfib@STANBIC.COM.GH","agbekop@STANBIC.COM.GH","adudl@stanbic.com.gh","tettehr@STANBIC.COM.GH","aidoo-quarcoopomed@STANBIC.COM.GH","kutin-boatengsnra@STANBIC.COM.GH","adukpov@STANBIC.COM.GH","boisonc@STANBIC.COM.GH","michaelt@STANBIC.COM.GH","asimenua@STANBIC.COM.GH","gyamfi-bediakom@STANBIC.COM.GH","puopilam@STANBIC.COM.GH","newmanw@STANBIC.COM.GH","aryeeteyr@STANBIC.COM.GH","sumbop@STANBIC.COM.GH","dadsonn@STANBIC.COM.GH","inusahs@STANBIC.COM.GH","njorgnaby@STANBIC.COM.GH","wellingtonk@STANBIC.COM.GH","harrisona@STANBIC.COM.GH","alhassane@STANBIC.COM.GH","dakurahe@STANBIC.COM.GH","okines@STANBIC.COM.GH","fouillardm@STANBIC.COM.GH","pobi@stanbic.com.gh","hardingr@STANBIC.COM.GH","atsunyog@STANBIC.COM.GH","dawform@STANBIC.COM.GH","osahk@STANBIC.COM.GH","koduad@STANBIC.COM.GH","aggora@stanbic.com.gh","osei-frimpongb@STANBIC.COM.GH","quashiee@STANBIC.COM.GH","okyereg@STANBIC.COM.GH","kweku-duahb@STANBIC.COM.GH","zengc@stanbic.com.gh","manua@STANBIC.COM.GH","owusu-adjeio@STANBIC.COM.GH","onias@STANBIC.COM.GH","offeip@STANBIC.COM.GH","mohammeda@STANBIC.COM.GH","bosomtwes@STANBIC.COM.GH","ziblims@STANBIC.COM.GH","tsirim@STANBIC.COM.GH","kambiref@STANBIC.COM.GH","mcestod-dotsec@STANBIC.COM.GH","tetteyf@STANBIC.COM.GH","bimpehk@STANBIC.COM.GH","asarep@STANBIC.COM.GH","nasirdeenn@STANBIC.COM.GH","hassanf@STANBIC.COM.GH","agyemangj2@STANBIC.COM.GH","agyei-owusui@STANBIC.COM.GH","kpenem@STANBIC.COM.GH","amponsaha@STANBIC.COM.GH","jaiseyj@STANBIC.COM.GH","kyeremehr@STANBIC.COM.GH","amoquandoh-ocranr@STANBIC.COM.GH","addos@STANBIC.COM.GH","boatengka@STANBIC.COM.GH","takyie@STANBIC.COM.GH","aduamas@STANBIC.COM.GH","dorworshiem@STANBIC.COM.GH","quarshiem@STANBIC.COM.GH","ackumeyp@STANBIC.COM.GH","addo-quayee@STANBIC.COM.GH","borteyborketeye@STANBIC.COM.GH","kassimy@STANBIC.COM.GH","adjeisa@STANBIC.COM.GH","dzikunup@STANBIC.COM.GH","nyarkose@STANBIC.COM.GH","aak-ibrahimq@STANBIC.COM.GH","ampahg@STANBIC.COM.GH","austinc@STANBIC.COM.GH","osahe@STANBIC.COM.GH","mutawakila@STANBIC.COM.GH","acheampongp@STANBIC.COM.GH","boatengba@STANBIC.COM.GH","esselp@STANBIC.COM.GH","gharteyn@STANBIC.COM.GH","apenahierw@STANBIC.COM.GH","fuseiniw@STANBIC.COM.GH","laryeaca@STANBIC.COM.GH","dan-braimahp@STANBIC.COM.GH","yahayays@STANBIC.COM.GH","musaha2@STANBIC.COM.GH","TorgborK@stanbic.com.gh","ayikud@STANBIC.COM.GH","ako-nair@STANBIC.COM.GH","achampongf@STANBIC.COM.GH","adjepongg@STANBIC.COM.GH","alhassanu@STANBIC.COM.GH","abbanf@STANBIC.COM.GH","adjeteys@STANBIC.COM.GH","achamponge@STANBIC.COM.GH","amoyawp@STANBIC.COM.GH","oduro-ayisil@STANBIC.COM.GH","saeed-adamss@stanbic.com.gh","marteik@STANBIC.COM.GH","amponsahk@STANBIC.COM.GH","ibrahima2@STANBIC.COM.GH","nketian@STANBIC.COM.GH","boakyev@STANBIC.COM.GH","odonkore@STANBIC.COM.GH","yiadomn@STANBIC.COM.GH","owusur2@STANBIC.COM.GH","ziblimo@STANBIC.COM.GH","shalman-adoom@STANBIC.COM.GH","dentehe@STANBIC.COM.GH","afenyaf@STANBIC.COM.GH","brobbeyt@STANBIC.COM.GH","armahp2@STANBIC.COM.GH","asares@STANBIC.COM.GH","asamoahb3@STANBIC.COM.GH","konaduc2@STANBIC.COM.GH","adonur2@STANBIC.COM.GH","akweteyk@STANBIC.COM.GH","okinel@STANBIC.COM.GH","fomadzii@STANBIC.COM.GH","mohammeda5@STANBIC.COM.GH","annorr@STANBIC.COM.GH","mensahl3@STANBIC.COM.GH","ibrahimk@STANBIC.COM.GH","oseimensahm@STANBIC.COM.GH","cudjoei@STANBIC.COM.GH","buafulb@STANBIC.COM.GH","alhajiadamf@STANBIC.COM.GH","oppongl@STANBIC.COM.GH","baakoe2@STANBIC.COM.GH","agbovij@stanbic.com.gh","amegbep@stanbic.com.gh","ametepes@stanbic.com.gh","amissahm@stanbic.com.gh","cobbinaj@stanbic.com.gh","obengj@stanbic.com.gh","mensahg3@stanbic.com.gh","adi-blaya@stanbic.com.gh","BogobiriA@stanbic.com.gh","kudzinyap@stanbic.com.gh","LampteySD@stanbic.com.gh","puotierea@stanbic.com.gh","quaynors@stanbic.com.gh","asareg@stanbic.com.gh","appiahm@stanbic.com.gh","abdulaia2@stanbic.com.gh","djokotoj@stanbic.com.gh","baffoey@stanbic.com.gh","spioa@stanbic.com.gh","mohammedamins@stanbic.com.gh","OforiS@stanbic.com.gh","Ben-HabibC@stanbic.com.gh","Owusu-AnsahH@stanbic.com.gh","BoffahM@stanbic.com.gh","AminuN2@stanbic.com.gh","KadinchinaS2@stanbic.com.gh","FatawuY@stanbic.com.gh","aboagyes@stanbic.com.gh"];
+
+/** Admins (always allowed to log in; always see CSV) **/
+const ADMIN_EMAILS = ["torgbork@stanbic.com.gh","goodmann@stanbic.com.gh"];
+
+/** Staff names **/
+const STAFF_NAMES = ["Ama Wujangi","Charles Kofi Adams","Christian Dordzie","Casandra Dapaah","Geoffrey Dafliso","Bernard Opoku Adu-Gyamfi","Peter Agbeko","Daniel Adu","Rebecca Obieley Eghan","Dominic Aidoo-Quarcoopome","Atta Snr. Kutin-Boateng","Veronica Mawuena Aku Adukpo","Christabel Aba Bondzewah Boison","Tony Michael","Annie Asimenu","Mavis Gyamfi-Bediako","Michael Diattah Puopila","William Newman","Richard Aryeetey","Philemon Sumbo","Nana Kow Bediako Dadson","Sadik Inusah","Yaw Njorgnab","Kelvin Odartey Wellington","Agnes Ivy Bimpeh Harrison","Eliasu Alhassan","Euphemia Taale Dakurah","Stephen Okine","Maud Kukua Ofori-Dadzie","Richard Pobi","Rita Harding","Gordon Atsunyo","Michael Dawfor","Kartey Osah","Daniel Afriyie Kodua","Kofi Anani Aggor","Aboagyewaa Osei-Frimpong","Emmanuel Quashie","George Frimpong Okyere","Beatrice Dewi Kweku-Duah","Catherine Zeng","Augustine Manu","Nana Offeibea Owusu-Adjei","Simon Onia","William Offei Parry","Abdul-Kadiri Mohammed","Sarah Bosomtwe","Sandalia Betintiche Ziblim","Michael Leslie Tsiri","Fernand Philippe Kambire Sey","Calvin Femi McEstod-Dotse","Felix Tettey","Kofi Owusu Achiaw Bimpeh","Portia Achiaa Asare","Nazirat Nasirdeen","Fawzan Bamba Hassan","Joseph Ofori Agyemang","Isaac Agyei-Owusu","Mawusuorm Mamle Kpene","Adobea Amponsah Nsakie","John Korku Jaisey","Rosemond Owiredu","Richmond Amoquandoh-Ocran","Samuel Kojo Addo","Kwame Agyenim Boateng","Emmanuel Berko Takyi","Samuel-David Aduama","Daniel Mawuli Dorworshie","Maxwell Biney Quarshie","Prudence Ami Ackumey","Ellis Aryeequaye Aggaine Addo-Quaye","Emmanuel Bortey BORKETEY","Yussif Kassim","Sandra Ashirley Adjei","Perkina Selasie Dzikunu","Stephen Essuah Nyarko","Queen Xorla Aak-Ibrahim","George Ampah","Catherine Mary Austin","Evelyn Korkor lawerteh","Ahmed Iddrisu Mutawakil","Prince Yeboah Acheampong","Bridget Boateng","Priscilla Cynthia Essel","Nora Irene Ghartey","Winnie Nuerki Apenahier","Abdul-Basit Wunpini Fuseini","Christopher Adjei Laryea","Portia Ajuiley Dan-Braimah","Yakubu Sheini Yahaya","Abdul-Halik Naporow Musah","Kunim Akwetey Torgbor","Derek Amarquaye Ayiku","Thomas Romeo Ako-Nai","Fred Konadu Achampong","Gifty Adjepong","Umme-Salma Alhassan","Frank Kwesi Abban","Samuel Ala Adjetey","Esther Achampong","Pierre Barrad Amoyaw","Loretta Oduro-Ayisi","Salimatu Saeed-Adams","Kelvin Nii Martey Martei","Robert Amponsah","Aruba Ibrahim","Nana Yaw Nketia","Emmanuel Boakye","Jacob Odonkor","Nana Asamoah Yiadom","Rosemond Achiaa Owusu","Osman Ziblim","Mary Yayra Shalman-Adoo","Eric Denteh","Francis Junior Afenya","Theresah Serwaa Brobbey","Prince Quaye Armah","Samuel Asare","Bridgette Asamoah","Charles Adu Konadu","Richmond Adonu","Kelvin Akwetey","Linda Naa Korkoi Okine","Israel Eli Fomadzi","Abdul-Fatawu Mohammed","Rosemary Twumwaa Annor","Leticia Mensah","Kubura Adizatu Khadija Ibrahim","Michael Osei Mensah","Isaac Cudjoe","Bertha Buaful","Fatimata Adam","Loretta Oppong","Eudel Nako Baako","Dedei-Agbovi Juliana","Amegbe Philip","Ametepe Salomey","Amissah Mabel","Cobbina Jacqueline","Obeng Juliet","Mensah Geraldine","Adi-Blay Shilaynn Adobea","Bogobiri Adiza Mohammed","Kudzinya Paula Selorm","Lamptey Sheila Dansoa","Puotiere Angela Batiere","Quaynor Samuel William","Asare George Otibu","Appiah  Adam Muzaffar","Abdulai Abdul-Manan","Djokoto Jesse","BAFFOE Yaw","Spio Anthony Prince","MohammedAmin Su-ad","Ofori Sarah","Ben-Habib Claudia","Owusu-Ansah Huldah","Adu Boffah Michael","Aminu Nimatu","Kadinchina Sandra","Yakubu  Abdul Fatawu","Aboagye Stephen"];
+/* =================== END EASY-EDIT SECTION =================== */
+
+/* ===== Optional: GLOBAL mode (locks names across all users/devices) =====
+   1) Set USE_REMOTE = true
+   2) Deploy the Google Apps Script in the comment at the bottom
+   3) Paste its Web App URL into REMOTE_URL
+*/
+const USE_REMOTE = false;
+const REMOTE_URL = "https://SCRIPT_WEB_APP_URL_HERE"; // only used if USE_REMOTE=true
+/* ======================================================================= */
+
+const loginCard = document.getElementById("loginCard");
+const formCard  = document.getElementById("formCard");
+const thankCard = document.getElementById("thankCard");
+const emailInput= document.getElementById("emailInput");
+const loginBtn  = document.getElementById("loginBtn");
+const loginMsg  = document.getElementById("loginMsg");
+const yourSel   = document.getElementById("yourName");
+const pairSel   = document.getElementById("pairName");
+const doneBtn   = document.getElementById("doneBtn");
+const downloadBtn=document.getElementById("downloadBtn");
+const statusEl  = document.getElementById("status");
+const tableWrap = document.getElementById("tableWrap");
+const resetLocal= document.getElementById("resetLocal");
+const showData  = document.getElementById("showData");
+
+let yourChoices, pairChoices;
+let currentEmail = "";
+
+/* Local persistence (per device) */
+const USED_KEY = "pairing_used_names_v3";
+const RECS_KEY = "pairing_records_v3";
+let usedNames = new Set(JSON.parse(localStorage.getItem(USED_KEY) || "[]"));
+let records   = JSON.parse(localStorage.getItem(RECS_KEY) || "[]");
+
+function saveLocal(){
+  localStorage.setItem(USED_KEY, JSON.stringify([...usedNames]));
+  localStorage.setItem(RECS_KEY, JSON.stringify(records));
+}
+
+/* ---------- Remote helpers (optional global mode) ---------- */
+async function remoteGetState(){
+  if(!USE_REMOTE) return { used:[...usedNames], rows:records };
+  const r = await fetch(REMOTE_URL+'?mode=get', {cache:'no-store'});
+  if(!r.ok) throw new Error('Remote get failed');
+  return await r.json();
+}
+async function remoteSubmit(row){
+  if(!USE_REMOTE) return { ok:true };
+  const r = await fetch(REMOTE_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ mode:'submit', row })
+  });
+  if(!r.ok) throw new Error('Remote submit failed');
+  return await r.json();
+}
+
+/* ---------- Choices init + refresh with selection preserved ---------- */
+function initDropdowns(){
+  yourChoices = new Choices(yourSel,{ searchEnabled:true, placeholder:true, shouldSort:true, searchPlaceholderValue:"Type to search…" });
+  pairChoices = new Choices(pairSel,{ searchEnabled:true, placeholder:true, shouldSort:true, searchPlaceholderValue:"Type to search…" });
+  refreshDropdowns(true);
+}
+
+function refreshDropdowns(preserve=false){
+  const meValue = yourChoices ? yourChoices.getValue(true) : "";
+  const partnerValue = pairChoices ? pairChoices.getValue(true) : "";
+
+  const available = STAFF_NAMES.filter(n => !usedNames.has(n));
+
+  // Rebuild "Your name"
+  yourChoices.clearChoices();
+  yourChoices.setChoices( available.map(n=>({value:n,label:n})), 'value','label', false );
+  if(preserve && meValue && available.includes(meValue)) {
+    yourChoices.setChoiceByValue(meValue);
+  }
+
+  // Rebuild "Partner" (exclude self)
+  const partnerAvail = available.filter(n => n !== (meValue || ''));
+  pairChoices.clearChoices();
+  pairChoices.setChoices( partnerAvail.map(n=>({value:n,label:n})), 'value','label', false );
+  if(preserve && partnerValue && partnerAvail.includes(partnerValue)) {
+    pairChoices.setChoiceByValue(partnerValue);
+  }
+}
+
+/* ---------- Login (case-insensitive; admins always allowed) ---------- */
+loginBtn.onclick = async () => {
+  const email = (emailInput.value || "").trim().toLowerCase();
+  const allow = EMAIL_ALLOWLIST.map(e => (e||"").toLowerCase());
+  const isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email);
+
+  if(!allow.includes(email) && !isAdmin){
+    loginMsg.textContent = "Email not recognized.";
+    return;
+  }
+
+  // Optional: load remote state (global) on login
+  let state = { used:[...usedNames], rows:[...records] };
+  try{
+    state = await remoteGetState();
+    if(USE_REMOTE){
+      usedNames = new Set(state.used || []);
+      records   = state.rows || [];
+    }
+  }catch(e){
+    console.warn(e);
+  }
+
+  const hasSubmitted = (state.rows || []).some(r => (r.email||"").toLowerCase() === email);
+
+  loginMsg.textContent = "";
+  loginCard.classList.add("hidden");
+
+  // Admins can always log in to view CSV; they can submit once only.
+  if (isAdmin) {
+    formCard.classList.remove("hidden");
+    downloadBtn.classList.remove("hidden"); // show CSV top-right
+    initDropdowns();
+    if (hasSubmitted) {
+      doneBtn.disabled = true;
+      statusEl.textContent = "Admin: you have already submitted. CSV button is at the top-right.";
+    } else {
+      doneBtn.disabled = false;
+      statusEl.textContent = "";
+    }
+    currentEmail = email;
+    yourSel.addEventListener('change', () => refreshDropdowns(true));
+    return;
+  }
+
+  // Non-admins: if already submitted, show Thank You only
+  if (hasSubmitted || records.some(r => (r.email||"").toLowerCase() === email)) {
+    thankCard.classList.remove("hidden");
+    return;
+  }
+
+  // Otherwise, show form to submit
+  formCard.classList.remove("hidden");
+  initDropdowns();
+  currentEmail = email;
+  yourSel.addEventListener('change', () => refreshDropdowns(true));
+};
+
+/* ---------- Submit ---------- */
+doneBtn.onclick = async () => {
+  statusEl.textContent = "";
+  const name = yourChoices.getValue(true);
+  const partner = pairChoices.getValue(true);
+
+  if(!name || !partner){
+    statusEl.textContent = "Please select both names.";
+    return;
+  }
+  if(name === partner){
+    statusEl.textContent = "You cannot select the same person for both fields.";
+    return;
+  }
+
+  // Verify against latest (remote if enabled)
+  try{
+    if(USE_REMOTE){
+      const state = await remoteGetState();
+      const latestUsed = new Set(state.used||[]);
+      if(latestUsed.has(name) || latestUsed.has(partner)){
+        statusEl.textContent = "One of the names has just been taken. Please choose again.";
+        usedNames = latestUsed;
+        refreshDropdowns(true);
+        return;
+      }
+    }
+  }catch(e){ console.warn(e); }
+
+  const row = { email: currentEmail, name, partner, time: new Date().toISOString() };
+
+  // Local update
+  usedNames.add(name); usedNames.add(partner);
+  records.push(row);
+  saveLocal();
+
+  // Optional global update
+  try{ await remoteSubmit(row); }catch(e){ console.warn(e); }
+
+  refreshDropdowns(true);
+  formCard.classList.add("hidden");
+  thankCard.classList.remove("hidden");
+};
+
+/* ---------- CSV (admins only; top-right button) ---------- */
+downloadBtn.onclick = () => {
+  if(records.length === 0){ alert("No records yet (local)."); return; }
+  let out = "email,name,partner,time\n";
+  for(const r of records){
+    const row = [r.email||"", r.name||"", r.partner||"", r.time||""]
+      .map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
+    out += row + "\n";
+  }
+  const blob = new Blob([out], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "pairings.csv"; a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* ---------- Local admin helpers (on this device only) ---------- */
+document.getElementById("resetLocal").onclick = () => {
+  if(!confirm("This clears local used names & records on THIS device only. Continue?")) return;
+  usedNames = new Set();
+  records = [];
+  saveLocal();
+  refreshDropdowns(true);
+  document.getElementById("tableWrap").innerHTML = "";
+  alert("Local data cleared.");
+};
+document.getElementById("showData").onclick = () => {
+  const tableWrap = document.getElementById("tableWrap");
+  if(records.length === 0){ tableWrap.innerHTML = "<p class='note'>No local records yet.</p>"; return; }
+  const rows = records.map(r => `<tr><td>${r.email||""}</td><td>${r.name||""}</td><td>${r.partner||""}</td><td>${r.time||""}</td></tr>`).join("");
+  tableWrap.innerHTML = `<table><thead><tr><th>Email</th><th>Name</th><th>Partner</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+};
+</script>
+
+<!-- ================= OPTIONAL: Google Apps Script backend =================
+If you want names to disappear for EVERYONE (global), do this quick setup:
+
+1) Go to https://script.google.com  → New project.
+2) Paste this code and save:
+
+function doGet(e){
+  const ss = getSheet_();
+  const data = ss.getDataRange().getValues(); // header: email,name,partner,time
+  const used = new Set();
+  const rows = [];
+  for (let i=1;i<data.length;i++){
+    const [email,name,partner,time] = data[i];
+    if(name) used.add(name);
+    if(partner) used.add(partner);
+    rows.push({email,name,partner,time});
+  }
+  return ContentService.createTextOutput(JSON.stringify({used:[...used], rows}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doPost(e){
+  const body = JSON.parse(e.postData.contents||"{}");
+  if(body.mode!=="submit") return doGet(e);
+  const r = body.row||{};
+  const ss = getSheet_();
+  ss.appendRow([r.email||"", r.name||"", r.partner||"", r.time||""]);
+  return ContentService.createTextOutput(JSON.stringify({ok:true}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function getSheet_(){
+  const id = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+  const ss = SpreadsheetApp.openById(id);
+  const sh = ss.getSheetByName("pairs") || ss.insertSheet("pairs");
+  if (sh.getLastRow() === 0) sh.appendRow(["email","name","partner","time"]);
+  return sh;
+}
+
+3) Create a Google Sheet in Drive; copy its ID from the URL.
+4) In Script editor: Project Settings → Script properties → Add SHEET_ID = your sheet ID.
+5) Deploy → New deployment → Type: Web app → Execute as: Me → Who has access: Anyone with the link → Deploy.
+6) Copy the Web App URL and paste it into REMOTE_URL above, then set USE_REMOTE = true.
+=========================================================================== -->
+</body>
+</html>
