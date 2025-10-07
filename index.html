@@ -50,9 +50,17 @@ th{background:#f8f9fb;color:#333}
   <div id="loginCard" class="card">
     <h1>The Next Chapter</h1>
     <h2>Trip Pairing System</h2>
-    <p class="note">Enter your work email to continue.</p>
+    <p class="note">Enter your work email and select your gender to continue.</p>
     <label for="emailInput">Work email</label>
     <input type="email" id="emailInput" placeholder="you@company.com" autocomplete="email">
+
+    <label for="genderSelect">Gender</label>
+    <select id="genderSelect">
+      <option value="" selected disabled>Choose…</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+
     <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <button class="btn" id="loginBtn">Continue</button>
       <span id="loginMsg" class="err"></span>
@@ -112,8 +120,175 @@ const EMAIL_ALLOWLIST = ["wujangia@stanbic.com.gh","adamsc@STANBIC.COM.GH","dord
 /** Admins (always allowed to log in; always see CSV) **/
 const ADMIN_EMAILS = ["torgbork@stanbic.com.gh","goodmann@stanbic.com.gh"];
 
-/** Staff names **/
-const STAFF_NAMES = ["Ama Wujangi","Charles Kofi Adams","Christian Dordzie","Casandra Dapaah","Geoffrey Dafliso","Bernard Opoku Adu-Gyamfi","Peter Agbeko","Daniel Adu","Rebecca Obieley Eghan","Dominic Aidoo-Quarcoopome","Atta Snr. Kutin-Boateng","Veronica Mawuena Aku Adukpo","Christabel Aba Bondzewah Boison","Tony Michael","Annie Asimenu","Mavis Gyamfi-Bediako","Michael Diattah Puopila","William Newman","Richard Aryeetey","Philemon Sumbo","Nana Kow Bediako Dadson","Sadik Inusah","Yaw Njorgnab","Kelvin Odartey Wellington","Agnes Ivy Bimpeh Harrison","Eliasu Alhassan","Euphemia Taale Dakurah","Stephen Okine","Maud Kukua Ofori-Dadzie","Richard Pobi","Rita Harding","Gordon Atsunyo","Michael Dawfor","Kartey Osah","Daniel Afriyie Kodua","Kofi Anani Aggor","Aboagyewaa Osei-Frimpong","Emmanuel Quashie","George Frimpong Okyere","Beatrice Dewi Kweku-Duah","Catherine Zeng","Augustine Manu","Nana Offeibea Owusu-Adjei","Simon Onia","William Offei Parry","Abdul-Kadiri Mohammed","Sarah Bosomtwe","Sandalia Betintiche Ziblim","Michael Leslie Tsiri","Fernand Philippe Kambire Sey","Calvin Femi McEstod-Dotse","Felix Tettey","Kofi Owusu Achiaw Bimpeh","Portia Achiaa Asare","Nazirat Nasirdeen","Fawzan Bamba Hassan","Joseph Ofori Agyemang","Isaac Agyei-Owusu","Mawusuorm Mamle Kpene","Adobea Amponsah Nsakie","John Korku Jaisey","Rosemond Owiredu","Richmond Amoquandoh-Ocran","Samuel Kojo Addo","Kwame Agyenim Boateng","Emmanuel Berko Takyi","Samuel-David Aduama","Daniel Mawuli Dorworshie","Maxwell Biney Quarshie","Prudence Ami Ackumey","Ellis Aryeequaye Aggaine Addo-Quaye","Emmanuel Bortey BORKETEY","Yussif Kassim","Sandra Ashirley Adjei","Perkina Selasie Dzikunu","Stephen Essuah Nyarko","Queen Xorla Aak-Ibrahim","George Ampah","Catherine Mary Austin","Evelyn Korkor lawerteh","Ahmed Iddrisu Mutawakil","Prince Yeboah Acheampong","Bridget Boateng","Priscilla Cynthia Essel","Nora Irene Ghartey","Winnie Nuerki Apenahier","Abdul-Basit Wunpini Fuseini","Christopher Adjei Laryea","Portia Ajuiley Dan-Braimah","Yakubu Sheini Yahaya","Abdul-Halik Naporow Musah","Kunim Akwetey Torgbor","Derek Amarquaye Ayiku","Thomas Romeo Ako-Nai","Fred Konadu Achampong","Gifty Adjepong","Umme-Salma Alhassan","Frank Kwesi Abban","Samuel Ala Adjetey","Esther Achampong","Pierre Barrad Amoyaw","Loretta Oduro-Ayisi","Salimatu Saeed-Adams","Kelvin Nii Martey Martei","Robert Amponsah","Aruba Ibrahim","Nana Yaw Nketia","Emmanuel Boakye","Jacob Odonkor","Nana Asamoah Yiadom","Rosemond Achiaa Owusu","Osman Ziblim","Mary Yayra Shalman-Adoo","Eric Denteh","Francis Junior Afenya","Theresah Serwaa Brobbey","Prince Quaye Armah","Samuel Asare","Bridgette Asamoah","Charles Adu Konadu","Richmond Adonu","Kelvin Akwetey","Linda Naa Korkoi Okine","Israel Eli Fomadzi","Abdul-Fatawu Mohammed","Rosemary Twumwaa Annor","Leticia Mensah","Kubura Adizatu Khadija Ibrahim","Michael Osei Mensah","Isaac Cudjoe","Bertha Buaful","Fatimata Adam","Loretta Oppong","Eudel Nako Baako","Dedei-Agbovi Juliana","Amegbe Philip","Ametepe Salomey","Amissah Mabel","Cobbina Jacqueline","Obeng Juliet","Mensah Geraldine","Adi-Blay Shilaynn Adobea","Bogobiri Adiza Mohammed","Kudzinya Paula Selorm","Lamptey Sheila Dansoa","Puotiere Angela Batiere","Quaynor Samuel William","Asare George Otibu","Appiah  Adam Muzaffar","Abdulai Abdul-Manan","Djokoto Jesse","BAFFOE Yaw","Spio Anthony Prince","MohammedAmin Su-ad","Ofori Sarah","Ben-Habib Claudia","Owusu-Ansah Huldah","Adu Boffah Michael","Aminu Nimatu","Kadinchina Sandra","Yakubu  Abdul Fatawu","Aboagye Stephen"];
+/** People list with gender (additions included: Noora Ari Goodman, Doreen Danso) **/
+const PEOPLE = [
+  {name:"Ama Wujangi",sex:"Female"},
+  {name:"Casandra Dapaah",sex:"Female"},
+  {name:"Rebecca Obieley Eghan",sex:"Female"},
+  {name:"Veronica Mawuena Aku Adukpo",sex:"Female"},
+  {name:"Christabel Aba Bondzewah Boison",sex:"Female"},
+  {name:"Annie Asimenu",sex:"Female"},
+  {name:"Mavis Gyamfi-Bediako",sex:"Female"},
+  {name:"Agnes Ivy Bimpeh Harrison",sex:"Female"},
+  {name:"Euphemia Taale Dakurah",sex:"Female"},
+  {name:"Maud Kukua Ofori-Dadzie",sex:"Female"},
+  {name:"Rita Harding",sex:"Female"},
+  {name:"Aboagyewaa Osei-Frimpong",sex:"Female"},
+  {name:"Beatrice Dewi Kweku-Duah",sex:"Female"},
+  {name:"Catherine Zeng",sex:"Female"},
+  {name:"Nana Offeibea Owusu-Adjei",sex:"Female"},
+  {name:"Sarah Bosomtwe",sex:"Female"},
+  {name:"Sandalia Betintiche Ziblim",sex:"Female"},
+  {name:"Portia Achiaa Asare",sex:"Female"},
+  {name:"Nazirat Nasirdeen",sex:"Female"},
+  {name:"Mawusuorm Mamle Kpene",sex:"Female"},
+  {name:"Adobea Amponsah Nsakie",sex:"Female"},
+  {name:"Rosemond Owiredu",sex:"Female"},
+  {name:"Prudence Ami Ackumey",sex:"Female"},
+  {name:"Sandra Ashirley Adjei",sex:"Female"},
+  {name:"Perkina Selasie Dzikunu",sex:"Female"},
+  {name:"Queen Xorla Aak-Ibrahim",sex:"Female"},
+  {name:"Catherine Mary Austin",sex:"Female"},
+  {name:"Evelyn Korkor lawerteh",sex:"Female"},
+  {name:"Bridget Boateng",sex:"Female"},
+  {name:"Priscilla Cynthia Essel",sex:"Female"},
+  {name:"Nora Irene Ghartey",sex:"Female"},
+  {name:"Winnie Nuerki Apenahier",sex:"Female"},
+  {name:"Portia Ajuiley Dan-Braimah",sex:"Female"},
+  {name:"Gifty Adjepong",sex:"Female"},
+  {name:"Umme-Salma Alhassan",sex:"Female"},
+  {name:"Esther Achampong",sex:"Female"},
+  {name:"Loretta Oduro-Ayisi",sex:"Female"},
+  {name:"Salimatu Saeed-Adams",sex:"Female"},
+  {name:"Aruba Ibrahim",sex:"Female"},
+  {name:"Rosemond Achiaa Owusu",sex:"Female"},
+  {name:"Mary Yayra Shalman-Adoo",sex:"Female"},
+  {name:"Theresah Serwaa Brobbey",sex:"Female"},
+  {name:"Bridgette Asamoah",sex:"Female"},
+  {name:"Linda Naa Korkoi Okine",sex:"Female"},
+  {name:"Rosemary Twumwaa Annor",sex:"Female"},
+  {name:"Leticia Mensah",sex:"Female"},
+  {name:"Kubura Adizatu Khadija Ibrahim",sex:"Female"},
+  {name:"Bertha Buaful",sex:"Female"},
+  {name:"Fatimata Adam",sex:"Female"},
+  {name:"Loretta Oppong",sex:"Female"},
+  {name:"Eudel Nako Baako",sex:"Female"},
+  {name:"Dedei-Agbovi Juliana",sex:"Female"},
+  {name:"Ametepe Salomey",sex:"Female"},
+  {name:"Amissah Mabel",sex:"Female"},
+  {name:"Cobbina Jacqueline",sex:"Female"},
+  {name:"Obeng Juliet",sex:"Female"},
+  {name:"Mensah Geraldine",sex:"Female"},
+  {name:"Adi-Blay Shilaynn Adobea",sex:"Female"},
+  {name:"Kudzinya Paula Selorm",sex:"Female"},
+  {name:"Lamptey Sheila Dansoa",sex:"Female"},
+  {name:"Puotiere Angela Batiere",sex:"Female"},
+  {name:"MohammedAmin Su-ad",sex:"Female"},
+  {name:"Ofori Sarah",sex:"Female"},
+  {name:"Ben-Habib Claudia",sex:"Female"},
+  {name:"Aminu Nimatu",sex:"Female"},
+  {name:"Kadinchina Sandra",sex:"Female"},
+  {name:"Noora Ari Goodman",sex:"Female"},
+  {name:"Doreen Danso",sex:"Female"},
+
+  {name:"Charles Kofi Adams",sex:"Male"},
+  {name:"Christian Dordzie",sex:"Male"},
+  {name:"Geoffrey Dafliso",sex:"Male"},
+  {name:"Bernard Opoku Adu-Gyamfi",sex:"Male"},
+  {name:"Peter Agbeko",sex:"Male"},
+  {name:"Daniel Adu",sex:"Male"},
+  {name:"Dominic Aidoo-Quarcoopome",sex:"Male"},
+  {name:"Atta Snr. Kutin-Boateng",sex:"Male"},
+  {name:"Tony Michael",sex:"Male"},
+  {name:"Michael Diattah Puopila",sex:"Male"},
+  {name:"William Newman",sex:"Male"},
+  {name:"Richard Aryeetey",sex:"Male"},
+  {name:"Philemon Sumbo",sex:"Male"},
+  {name:"Nana Kow Bediako Dadson",sex:"Male"},
+  {name:"Sadik Inusah",sex:"Male"},
+  {name:"Yaw Njorgnab",sex:"Male"},
+  {name:"Kelvin Odartey Wellington",sex:"Male"},
+  {name:"Eliasu Alhassan",sex:"Male"},
+  {name:"Stephen Okine",sex:"Male"},
+  {name:"Richard Pobi",sex:"Male"},
+  {name:"Gordon Atsunyo",sex:"Male"},
+  {name:"Michael Dawfor",sex:"Male"},
+  {name:"Kartey Osah",sex:"Male"},
+  {name:"Daniel Afriyie Kodua",sex:"Male"},
+  {name:"Kofi Anani Aggor",sex:"Male"},
+  {name:"Emmanuel Quashie",sex:"Male"},
+  {name:"George Frimpong Okyere",sex:"Male"},
+  {name:"Augustine Manu",sex:"Male"},
+  {name:"Simon Onia",sex:"Male"},
+  {name:"William Offei Parry",sex:"Male"},
+  {name:"Abdul-Kadiri Mohammed",sex:"Male"},
+  {name:"Michael Leslie Tsiri",sex:"Male"},
+  {name:"Fernand Philippe Kambire Sey",sex:"Male"},
+  {name:"Calvin Femi McEstod-Dotse",sex:"Male"},
+  {name:"Felix Tettey",sex:"Male"},
+  {name:"Kofi Owusu Achiaw Bimpeh",sex:"Male"},
+  {name:"Fawzan Bamba Hassan",sex:"Male"},
+  {name:"Joseph Ofori Agyemang",sex:"Male"},
+  {name:"Isaac Agyei-Owusu",sex:"Male"},
+  {name:"John Korku Jaisey",sex:"Male"},
+  {name:"Richmond Amoquandoh-Ocran",sex:"Male"},
+  {name:"Samuel Kojo Addo",sex:"Male"},
+  {name:"Kwame Agyenim Boateng",sex:"Male"},
+  {name:"Emmanuel Berko Takyi",sex:"Male"},
+  {name:"Samuel-David Aduama",sex:"Male"},
+  {name:"Daniel Mawuli Dorworshie",sex:"Male"},
+  {name:"Maxwell Biney Quarshie",sex:"Male"},
+  {name:"Ellis Aryeequaye Aggaine Addo-Quaye",sex:"Male"},
+  {name:"Emmanuel Bortey BORKETEY",sex:"Male"},
+  {name:"Yussif Kassim",sex:"Male"},
+  {name:"Stephen Essuah Nyarko",sex:"Male"},
+  {name:"George Ampah",sex:"Male"},
+  {name:"Ahmed Iddrisu Mutawakil",sex:"Male"},
+  {name:"Prince Yeboah Acheampong",sex:"Male"},
+  {name:"Abdul-Basit Wunpini Fuseini",sex:"Male"},
+  {name:"Christopher Adjei Laryea",sex:"Male"},
+  {name:"Yakubu Sheini Yahaya",sex:"Male"},
+  {name:"Abdul-Halik Naporow Musah",sex:"Male"},
+  {name:"Kunim Akwetey Torgbor",sex:"Male"},
+  {name:"Derek Amarquaye Ayiku",sex:"Male"},
+  {name:"Thomas Romeo Ako-Nai",sex:"Male"},
+  {name:"Fred Konadu Achampong",sex:"Male"},
+  {name:"Frank Kwesi Abban",sex:"Male"},
+  {name:"Samuel Ala Adjetey",sex:"Male"},
+  {name:"Pierre Barrad Amoyaw",sex:"Male"},
+  {name:"Kelvin Nii Martey Martei",sex:"Male"},
+  {name:"Robert Amponsah",sex:"Male"},
+  {name:"Nana Yaw Nketia",sex:"Male"},
+  {name:"Emmanuel Boakye",sex:"Male"},
+  {name:"Jacob Odonkor",sex:"Male"},
+  {name:"Nana Asamoah Yiadom",sex:"Male"},
+  {name:"Osman Ziblim",sex:"Male"},
+  {name:"Eric Denteh",sex:"Male"},
+  {name:"Francis Junior Afenya",sex:"Male"},
+  {name:"Prince Quaye Armah",sex:"Male"},
+  {name:"Samuel Asare",sex:"Male"},
+  {name:"Charles Adu Konadu",sex:"Male"},
+  {name:"Richmond Adonu",sex:"Male"},
+  {name:"Kelvin Akwetey",sex:"Male"},
+  {name:"Israel Eli Fomadzi",sex:"Male"},
+  {name:"Abdul-Fatawu Mohammed",sex:"Male"},
+  {name:"Michael Osei Mensah",sex:"Male"},
+  {name:"Isaac Cudjoe",sex:"Male"},
+  {name:"Amegbe Philip",sex:"Male"},
+  {name:"Bogobiri Adiza Mohammed",sex:"Male"},
+  {name:"Quaynor Samuel William",sex:"Male"},
+  {name:"Asare George Otibu",sex:"Male"},
+  {name:"Appiah  Adam Muzaffar",sex:"Male"},
+  {name:"Abdulai Abdul-Manan",sex:"Male"},
+  {name:"Djokoto Jesse",sex:"Male"},
+  {name:"BAFFOE Yaw",sex:"Male"},
+  {name:"Spio Anthony Prince",sex:"Male"},
+  {name:"Owusu-Ansah Huldah",sex:"Male"},
+  {name:"Adu Boffah Michael",sex:"Male"},
+  {name:"Yakubu  Abdul Fatawu",sex:"Male"},
+  {name:"Aboagye Stephen",sex:"Male"}
+];
+
 /* =================== END EASY-EDIT SECTION =================== */
 
 /* ===== Optional: GLOBAL mode (locks names across all users/devices) =====
@@ -129,6 +304,7 @@ const loginCard = document.getElementById("loginCard");
 const formCard  = document.getElementById("formCard");
 const thankCard = document.getElementById("thankCard");
 const emailInput= document.getElementById("emailInput");
+const genderSel = document.getElementById("genderSelect");
 const loginBtn  = document.getElementById("loginBtn");
 const loginMsg  = document.getElementById("loginMsg");
 const yourSel   = document.getElementById("yourName");
@@ -142,16 +318,22 @@ const showData  = document.getElementById("showData");
 
 let yourChoices, pairChoices;
 let currentEmail = "";
+let currentGender = ""; // NEW: chosen gender
 
 /* Local persistence (per device) */
-const USED_KEY = "pairing_used_names_v3";
-const RECS_KEY = "pairing_records_v3";
+const USED_KEY = "pairing_used_names_v4";
+const RECS_KEY = "pairing_records_v4";
 let usedNames = new Set(JSON.parse(localStorage.getItem(USED_KEY) || "[]"));
 let records   = JSON.parse(localStorage.getItem(RECS_KEY) || "[]");
 
 function saveLocal(){
   localStorage.setItem(USED_KEY, JSON.stringify([...usedNames]));
   localStorage.setItem(RECS_KEY, JSON.stringify(records));
+}
+
+/* Helpers to get names by gender */
+function namesByGender(g){
+  return PEOPLE.filter(p => p.sex === g).map(p => p.name);
 }
 
 /* ---------- Remote helpers (optional global mode) ---------- */
@@ -183,7 +365,8 @@ function refreshDropdowns(preserve=false){
   const meValue = yourChoices ? yourChoices.getValue(true) : "";
   const partnerValue = pairChoices ? pairChoices.getValue(true) : "";
 
-  const available = STAFF_NAMES.filter(n => !usedNames.has(n));
+  const pool = namesByGender(currentGender);
+  const available = pool.filter(n => !usedNames.has(n));
 
   // Rebuild "Your name"
   yourChoices.clearChoices();
@@ -204,9 +387,14 @@ function refreshDropdowns(preserve=false){
 /* ---------- Login (case-insensitive; admins always allowed) ---------- */
 loginBtn.onclick = async () => {
   const email = (emailInput.value || "").trim().toLowerCase();
+  currentGender = genderSel.value || "";
   const allow = EMAIL_ALLOWLIST.map(e => (e||"").toLowerCase());
   const isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email);
 
+  if(!currentGender){
+    loginMsg.textContent = "Please select your gender.";
+    return;
+  }
   if(!allow.includes(email) && !isAdmin){
     loginMsg.textContent = "Email not recognized.";
     return;
@@ -233,6 +421,7 @@ loginBtn.onclick = async () => {
   if (isAdmin) {
     formCard.classList.remove("hidden");
     downloadBtn.classList.remove("hidden"); // show CSV top-right
+    currentEmail = email;
     initDropdowns();
     if (hasSubmitted) {
       doneBtn.disabled = true;
@@ -241,7 +430,6 @@ loginBtn.onclick = async () => {
       doneBtn.disabled = false;
       statusEl.textContent = "";
     }
-    currentEmail = email;
     yourSel.addEventListener('change', () => refreshDropdowns(true));
     return;
   }
@@ -254,8 +442,8 @@ loginBtn.onclick = async () => {
 
   // Otherwise, show form to submit
   formCard.classList.remove("hidden");
-  initDropdowns();
   currentEmail = email;
+  initDropdowns();
   yourSel.addEventListener('change', () => refreshDropdowns(true));
 };
 
@@ -288,7 +476,7 @@ doneBtn.onclick = async () => {
     }
   }catch(e){ console.warn(e); }
 
-  const row = { email: currentEmail, name, partner, time: new Date().toISOString() };
+  const row = { email: currentEmail, name, partner, time: new Date().toISOString(), gender: currentGender };
 
   // Local update
   usedNames.add(name); usedNames.add(partner);
@@ -306,9 +494,9 @@ doneBtn.onclick = async () => {
 /* ---------- CSV (admins only; top-right button) ---------- */
 downloadBtn.onclick = () => {
   if(records.length === 0){ alert("No records yet (local)."); return; }
-  let out = "email,name,partner,time\n";
+  let out = "email,name,partner,gender,time\n";
   for(const r of records){
-    const row = [r.email||"", r.name||"", r.partner||"", r.time||""]
+    const row = [r.email||"", r.name||"", r.partner||"", r.gender||"", r.time||""]
       .map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
     out += row + "\n";
   }
@@ -332,8 +520,8 @@ document.getElementById("resetLocal").onclick = () => {
 document.getElementById("showData").onclick = () => {
   const tableWrap = document.getElementById("tableWrap");
   if(records.length === 0){ tableWrap.innerHTML = "<p class='note'>No local records yet.</p>"; return; }
-  const rows = records.map(r => `<tr><td>${r.email||""}</td><td>${r.name||""}</td><td>${r.partner||""}</td><td>${r.time||""}</td></tr>`).join("");
-  tableWrap.innerHTML = `<table><thead><tr><th>Email</th><th>Name</th><th>Partner</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const rows = records.map(r => `<tr><td>${r.email||""}</td><td>${r.name||""}</td><td>${r.partner||""}</td><td>${r.gender||""}</td><td>${r.time||""}</td></tr>`).join("");
+  tableWrap.innerHTML = `<table><thead><tr><th>Email</th><th>Name</th><th>Partner</th><th>Gender</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
 };
 </script>
 
@@ -345,14 +533,14 @@ If you want names to disappear for EVERYONE (global), do this quick setup:
 
 function doGet(e){
   const ss = getSheet_();
-  const data = ss.getDataRange().getValues(); // header: email,name,partner,time
+  const data = ss.getDataRange().getValues(); // header: email,name,partner,gender,time
   const used = new Set();
   const rows = [];
   for (let i=1;i<data.length;i++){
-    const [email,name,partner,time] = data[i];
+    const [email,name,partner,gender,time] = data[i];
     if(name) used.add(name);
     if(partner) used.add(partner);
-    rows.push({email,name,partner,time});
+    rows.push({email,name,partner,gender,time});
   }
   return ContentService.createTextOutput(JSON.stringify({used:[...used], rows}))
     .setMimeType(ContentService.MimeType.JSON);
@@ -362,7 +550,7 @@ function doPost(e){
   if(body.mode!=="submit") return doGet(e);
   const r = body.row||{};
   const ss = getSheet_();
-  ss.appendRow([r.email||"", r.name||"", r.partner||"", r.time||""]);
+  ss.appendRow([r.email||"", r.name||"", r.partner||"", r.gender||"", r.time||""]);
   return ContentService.createTextOutput(JSON.stringify({ok:true}))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -370,7 +558,7 @@ function getSheet_(){
   const id = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
   const ss = SpreadsheetApp.openById(id);
   const sh = ss.getSheetByName("pairs") || ss.insertSheet("pairs");
-  if (sh.getLastRow() === 0) sh.appendRow(["email","name","partner","time"]);
+  if (sh.getLastRow() === 0) sh.appendRow(["email","name","partner","gender","time"]);
   return sh;
 }
 
